@@ -1,0 +1,76 @@
+device: cuda
+dataset:
+  name: CIFAR10
+  dataset_dir: /scratch/un270/imagenet-100
+  image_size: 32
+  n_channels: 3
+  n_classes: 10
+model:
+  type: imagenet
+  name: FBNetV2_supernet
+  init_mode: kaiming_fan_out
+  train_type: search
+train:
+  resume: False
+  seed: 0
+  gamma_search: 1.0
+  gamma_train: 1.0
+  precision: O00
+  batch_size: 128
+  subdivision: 1
+  optimizer: sgd
+  base_lr: 0.004
+  momentum: 0.9
+  nesterov: False
+  weight_decay: 2e-4
+  #weight_decay: 4e-5
+  output_dir: /scratch/ag7644/output/cifar-small-V7/adv/robust-wrt-l1-pgd-consit-1e-1
+  log_period: 100
+  checkpoint_period: 1
+  use_tensorboard: True
+  distributed: False
+  dataloader:
+    num_workers: 8
+    drop_last: True
+    pin_memory: True
+validation:
+  batch_size: 128
+  dataloader:
+    num_workers: 8
+    drop_last: False
+    pin_memory: True
+scheduler:
+  epochs: 20
+  #type: cosine
+  type: multistep
+  milestones: [75, 90, 100]
+  lr_decay: 0.1
+  lr_min_factor: 4e-5
+augmentation:
+  use_random_crop: True
+  use_random_horizontal_flip: True
+  use_cutout: False
+  use_random_erasing: False
+  use_dual_cutout: False
+  use_mixup: False
+  use_ricap: False
+  use_cutmix: False
+  use_label_smoothing: False
+tta:
+  use_resize: True
+  use_center_crop: True
+  resize: 256
+tensorboard:
+  train_images: False
+  val_images: False
+  model_params: False
+gs_search:
+  optimizer: 'adam'
+  base_lr: 0.1
+  adam_betas: (0.9, 0.999)
+  weight_decay: 1e-4
+  alpha: 0.2
+  beta: 0.5
+  search_data_percent: 0.2
+  base_temperature: 5.0
+  temp_factor: -0.045
